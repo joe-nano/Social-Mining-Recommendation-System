@@ -1,0 +1,1 @@
+Notations générales Résultat modalités cibles cercle recomposé Resultat MumTree bipartionnement Greedy Monothetic intervalles discrétisation Resultat utilisant modèles séparés Resultat MumTree bipartionnement Greedy Monothetic intervalles limités
