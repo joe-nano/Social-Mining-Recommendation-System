@@ -1,0 +1,2 @@
+,word,freq
+0,egc2004_nt_mb,1

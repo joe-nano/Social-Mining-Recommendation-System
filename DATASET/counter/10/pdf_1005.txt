@@ -1,0 +1,5 @@
+,word,freq
+0,bipartionnement,2
+1,monothetic,2
+2,intervalles,2
+3,discrétisation,1

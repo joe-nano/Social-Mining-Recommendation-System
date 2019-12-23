@@ -1,0 +1,3 @@
+,word,freq
+0,noncontaminee,1
+1,déterminer,1

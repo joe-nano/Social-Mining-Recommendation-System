@@ -1,0 +1,9 @@
+,word,freq
+0,personne,7
+1,tableau,6
+2,peindre,6
+3,peintre,5
+4,12personne,1
+5,projection,1
+6,agtpeintre,1
+7,rougeiii,1

@@ -1,0 +1,15 @@
+,word,freq
+0,contaminé,7
+1,voisinage,6
+2,agricole,4
+3,urbain,2
+4,règles,2
+5,noncontaminee,1
+6,remarque,1
+7,écriture,1
+8,important,1
+9,déterminer,1
+10,classe,1
+11,nouvel,1
+12,exemple,1
+13,ensuite,1

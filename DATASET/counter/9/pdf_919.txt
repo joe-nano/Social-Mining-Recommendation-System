@@ -1,0 +1,7 @@
+,word,freq
+0,principal,3
+1,décroissant,2
+2,substitue,2
+3,saidi_etal_egc2007,1
+4,supprimer,1
+5,continuer,1

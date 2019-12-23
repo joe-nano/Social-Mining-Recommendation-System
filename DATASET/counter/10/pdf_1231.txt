@@ -1,0 +1,14 @@
+,word,freq
+0,sentations,4
+1,universite,2
+2,rotateannees,2
+3,nestregions,2
+4,manipulation,1
+5,giacometti,1
+6,facilement,1
+7,description,1
+8,nestannees,1
+9,optimisation,1
+10,remarquons,1
+11,foundations,1
+12,technology,1

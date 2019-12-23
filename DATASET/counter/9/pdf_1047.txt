@@ -1,0 +1,6 @@
+,word,freq
+0,contaminé,7
+1,voisinage,6
+2,noncontaminee,1
+3,important,1
+4,déterminer,1

@@ -1,0 +1,6 @@
+,word,freq
+0,microsoft,1
+1,cartographie,1
+2,351mantique,1
+3,connaissances,1
+4,poster,1

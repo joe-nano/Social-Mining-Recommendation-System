@@ -1,0 +1,17 @@
+,word,freq
+0,information,2
+1,Université,1
+2,technologie,1
+3,maintenant,1
+4,technologies,1
+5,soudainement,1
+6,croissance,1
+7,gigantesque,1
+8,surprenant,1
+9,chercheurs,1
+10,informatique,1
+11,recherches,1
+12,motivation,1
+13,inévitables,1
+14,confrontés,1
+15,Conferences,1

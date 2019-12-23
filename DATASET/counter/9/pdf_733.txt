@@ -1,0 +1,2 @@
+,word,freq
+0,actes_non_num,1

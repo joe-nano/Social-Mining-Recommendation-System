@@ -1,0 +1,3 @@
+,word,freq
+0,fu_yu,1
+1,egc04_poster,1

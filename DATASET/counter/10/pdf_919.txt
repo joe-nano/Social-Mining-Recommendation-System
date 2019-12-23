@@ -1,0 +1,3 @@
+,word,freq
+0,décroissant,2
+1,saidi_etal_egc2007,1

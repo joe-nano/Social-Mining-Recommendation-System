@@ -1,0 +1,17 @@
+,word,freq
+0,personne,7
+1,tableau,6
+2,peindre,6
+3,peintre,5
+4,animal,4
+5,ernst,2
+6,egcfin,1
+7,action,1
+8,12personne,1
+9,projection,1
+10,diffr2,1
+11,bleui,1
+12,felix,1
+13,agtpeintre,1
+14,rougeiii,1
+15,999g5,1

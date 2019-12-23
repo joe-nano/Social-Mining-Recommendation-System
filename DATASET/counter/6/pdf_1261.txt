@@ -1,0 +1,2 @@
+,word,freq
+0,mephu_egc04_french_6pages,1

@@ -1,0 +1,10 @@
+,word,freq
+0,bipartionnement,2
+1,monothetic,2
+2,intervalles,2
+3,notations,1
+4,générales,1
+5,modalités,1
+6,recomposé,1
+7,discrétisation,1
+8,utilisant,1

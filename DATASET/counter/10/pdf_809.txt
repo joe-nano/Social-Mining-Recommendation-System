@@ -1,0 +1,2 @@
+,word,freq
+0,egc08_avec_rnti,1

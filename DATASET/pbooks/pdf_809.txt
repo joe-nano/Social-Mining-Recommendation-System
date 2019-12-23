@@ -1,1 +1,1 @@
-egc08_avec_rnti egc08rnti
+egc08_avec_rnti

@@ -1,0 +1,17 @@
+,word,freq
+0,longueur,3
+1,principal,3
+2,décroissant,2
+3,devient,2
+4,substitue,2
+5,contexte,2
+6,présence,2
+7,saidi_etal_egc2007,1
+8,ensemble,1
+9,position,1
+10,premier,1
+11,supprimer,1
+12,séquence,1
+13,répéter,1
+14,extraire,1
+15,continuer,1

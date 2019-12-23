@@ -1,0 +1,14 @@
+,word,freq
+0,documents,12
+1,unexpectedminer,5
+2,précision,5
+3,référence,3
+4,vectorielle,2
+5,inattendu,2
+6,pretraitement,2
+7,similaires,1
+8,présentant,1
+9,caractère,1
+10,séquences,1
+11,inattendus,1
+12,similarite,1

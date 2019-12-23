@@ -1,1 +1,1 @@
-saidi_etal_egc2007 début ensemble motifs trier ordre décroissant longueur motif trier ordre décroissant chaque motif alors devient motif principal sinon position premier motif longueur chaque motif substitue alors devient motif principal sortir chaque motif motif principal alors supprimer début chaque séquence chaque motif longueur répéter extraire gramme substitue alors noter contexte aller présence jusqu noter contexte présence continuer
+saidi_etal_egc2007 décroissant décroissant

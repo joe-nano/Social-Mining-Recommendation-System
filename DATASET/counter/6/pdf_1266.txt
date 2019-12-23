@@ -1,0 +1,13 @@
+,word,freq
+0,personne,7
+1,tableau,6
+2,peindre,6
+3,peintre,5
+4,animal,4
+5,egcfin,1
+6,action,1
+7,12personne,1
+8,projection,1
+9,diffr2,1
+10,agtpeintre,1
+11,rougeiii,1

@@ -1,0 +1,4 @@
+,word,freq
+0,788999,4
+1,actes_non_num,1
+2,351rotes,1

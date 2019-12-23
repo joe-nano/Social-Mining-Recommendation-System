@@ -1,0 +1,13 @@
+,word,freq
+0,sélectionner,2
+1,grammaticales,1
+2,génériques,1
+3,déterminer,1
+4,substantifs,1
+5,décroissante,1
+6,représentation,1
+7,vectorielle,1
+8,séparation,1
+9,exactposctx,1
+10,multingram,1
+11,onlyonengram,1

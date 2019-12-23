@@ -1,1 +1,1 @@
-01230 d0002 voisinage agricole contaminé voisinage urbain contaminé voisinage agricole contaminé contaminé class contaminé voisinage agricole class contaminé voisinage urbain class contaminé voisinage agricole class noncontaminee remarque ordre écriture règles important déterminer classe nouvel exemple teste abord règle ensuite échec teste règle échec règles teste règle ainsi suite
+noncontaminee déterminer

@@ -1,0 +1,8 @@
+,word,freq
+0,unexpectedminer,5
+1,vectorielle,2
+2,pretraitement,2
+3,similaires,1
+4,présentant,1
+5,inattendus,1
+6,similarite,1

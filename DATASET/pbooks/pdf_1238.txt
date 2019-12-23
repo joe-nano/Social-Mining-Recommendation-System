@@ -1,1 +1,1 @@
-mesdocuments articles article1 article1tex article egc_finale1
+mesdocuments article1tex egc_finale1

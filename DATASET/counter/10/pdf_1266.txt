@@ -1,0 +1,4 @@
+,word,freq
+0,12personne,1
+1,projection,1
+2,agtpeintre,1

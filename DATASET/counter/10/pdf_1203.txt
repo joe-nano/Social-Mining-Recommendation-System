@@ -1,0 +1,4 @@
+,word,freq
+0,cartographie,1
+1,351mantique,1
+2,connaissances,1

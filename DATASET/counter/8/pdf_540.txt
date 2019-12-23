@@ -1,0 +1,3 @@
+,word,freq
+0,consignes,1
+1,articles,1

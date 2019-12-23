@@ -1,0 +1,4 @@
+,word,freq
+0,mesdocuments,1
+1,article1tex,1
+2,egc_finale1,1

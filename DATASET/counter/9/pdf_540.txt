@@ -1,0 +1,2 @@
+,word,freq
+0,consignes,1

@@ -1,0 +1,14 @@
+,word,freq
+0,assemblage,1
+1,Exploitation,1
+2,Rensselaer,1
+3,Polytechnic,1
+4,extraction,1
+5,techniques,1
+6,fondamentales,1
+7,exploration,1
+8,complexité,1
+9,potentiellement,1
+10,information,1
+11,réflexions,1
+12,orientations,1

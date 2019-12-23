@@ -1,0 +1,3 @@
+,word,freq
+0,roche_posteregc,1
+1,c88dc8c,1

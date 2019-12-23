@@ -1,0 +1,16 @@
+,word,freq
+0,resultat,3
+1,mumtree,2
+2,bipartionnement,2
+3,monothetic,2
+4,intervalles,2
+5,notations,1
+6,générales,1
+7,résultat,1
+8,modalités,1
+9,recomposé,1
+10,discrétisation,1
+11,utilisant,1
+12,modèles,1
+13,séparés,1
+14,limités,1

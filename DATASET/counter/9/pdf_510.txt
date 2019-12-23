@@ -1,0 +1,9 @@
+,word,freq
+0,individus,4
+1,evolution,4
+2,différentes,4
+3,vteimpbarp,2
+4,vteimpcorp,2
+5,vteimpproj,2
+6,consignes,1
+7,population,1

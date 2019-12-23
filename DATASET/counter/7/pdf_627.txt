@@ -1,0 +1,4 @@
+,word,freq
+0,articles,1
+1,assemblage,1
+2,pdfrnti,1
