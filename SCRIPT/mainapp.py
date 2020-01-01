@@ -91,7 +91,7 @@ with open(os.path.join(path, 'stopwords'), 'r+') as st:
 #%%
 
 #booknamescomplete = updatetranslation(path, booknamescomplete, english)
-    
+
 #%%
     
 def tokStemmer(booknames):
@@ -112,21 +112,25 @@ def tokStemmer(booknames):
         with open(os.path.join(path, f'books/{ii}'), 'r+') as file:
             file_dt = file.read()
             #tokenize and stem
+            fr_stem = FrenchStemmer()
             tokenizer = RegexpTokenizer(r'\w+')
             up_text = tokenizer.tokenize(file_dt)
+            stemmed = []
+            for ij in up_text:
+                stemmed.append(fr_stem.stem(ij))
             file.close()
+            final = ''
+            new_token = []
+            for each_word in stemmed:
+                each_word = each_word.lower()
+                if each_word not in stopwords:
+                    new_token.append(each_word)
+            final = ' '.join(new_token)
+            sentence.append(final)
             #--processed tokens
             for tk in toks:
-                new_token = []
                 word_freq = Counter()
-                final = ''
-                new_words = [ii for ii in up_text if len(ii) >= int(tk)]
-                for each_word in new_words:
-                    each_word = each_word.lower()
-                    if each_word not in stopwords:
-                        new_token.append(each_word)
-                final = ' '.join(new_words)
-                sentence.append(str(final.lower()))
+                new_words = [ii for ii in new_token if len(ii) <= int(tk)]
                 if not os.path.exists(os.path.join(path, f'counter/{tk}')):
                     os.makedirs(os.path.join(path, f'counter/{tk}'))
                     if not os.path.exists(os.path.join(path, f'counter/{tk}/{ii}')):
@@ -138,44 +142,40 @@ def tokStemmer(booknames):
                             word.append(x)
                             freq.append(y)
                         most_frequent_words = pd.DataFrame({'word': word, 'freq': freq})
-                        most_frequent_words.to_csv(os.path.join(path, f'counter/{tk}/{ii}'))
+                        most_frequent_words.to_csv(os.path.join(path, f'counter/{tk}/{ii}'), mode='w')
                     else:
                         pass
                 else:
                     if not os.path.exists(os.path.join(path, f'counter/{tk}/{ii}')):
                         word = []
                         freq = []
-                        for wd in new_words:
+                        for wd in new_token:
                             word_freq.update([wd])
                         for x, y in word_freq.most_common(30):
                             word.append(x)
                             freq.append(y)
                         most_frequent_words = pd.DataFrame({'word': word, 'freq': freq})
-                        most_frequent_words.to_csv(os.path.join(path, f'counter/{tk}/{ii}'))
+                        most_frequent_words.to_csv(os.path.join(path, f'counter/{tk}/{ii}'), mode='w')
                     else:
                         pass
             if not os.path.exists(os.path.join(path, f'pbooks/{ii}')):
                 with open(os.path.join(path, f'pbooks/{ii}'), 'w') as wr:
                     wr.writelines(final)
             else:
-                with open(os.path.join(path, f'pbooks/{ii}'), 'w+') as wr:
+                with open(os.path.join(path, f'pbooks/{ii}'), 'w') as wr:
                     wr.writelines(final)
-    try:
-        
-        complete = booknames.copy(deep = True)
-        complete['sentence'] = sentence
-        #--save files to directory
-        if not os.path.exists(os.path.join(path, 'processed')):
-            complete.to_csv(os.path.join(path, 'processed/pcomplete.csv'))
-        else:
-            complete.to_csv(os.path.join(path, 'processed/pcomplete.csv'))
-    except (ValueError, RuntimeError, TypeError, NameError, OSError):
-        pass
+    print(len(sentence))
+    complete = booknames.copy(deep = True)
+    complete['sentence'] = sentence
+    #--save files to directory
+    if not os.path.exists(os.path.join(path, 'processed')):
+        complete.to_csv(os.path.join(path, 'processed/pcomplete.csv'), mode='w')
+    else:
+        complete.to_csv(os.path.join(path, 'processed/pcomplete.csv'), mode='w')
     return complete
         
 #complete = tokStemmer(booknamescomplete)
-#%% Detect Language
-    
+#%% Detect Language  
 from textblob import TextBlob
 def detect(path):
     language = []
