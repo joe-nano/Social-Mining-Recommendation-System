@@ -5,11 +5,11 @@
 3,45pdlm45mif,14
 4,9xhi259xf,13
 5,9xfxl,13
-6,it9xf,11
-7,it9qf,11
-8,pdfmfmmt,10
-9,pifyfxmt,10
-10,nhfh9,9
+6,it9qf,12
+7,it9xf,11
+8,nhfh9,11
+9,pdfmfmmt,10
+10,pifyfxmt,10
 11,279qf,8
 12,pifyfmm8,8
 13,itmdfhf,8

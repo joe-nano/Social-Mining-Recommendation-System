@@ -1,1 +1,1 @@
-saidi_etal_egc2007 décroissant décroissant
+saidi_etal_egc2007 ensembl motif tri ordre décroiss longueur motif tri ordre décroiss chaqu motif alor devient motif principal posit premi motif longueur chaqu motif substitu alor devient motif principal sort chaqu motif motif principal alor supprim chaqu séquenc chaqu motif longueur répet extrair gramm substitu alor context aller présenc context présenc continu

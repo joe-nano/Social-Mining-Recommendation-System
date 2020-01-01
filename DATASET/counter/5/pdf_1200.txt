@@ -1,7 +1,7 @@
 ,word,freq
-0,xynpo,57
+0,xynpo,58
 1,ruqso,23
-2,jlolk,17
+2,jlolk,18
 3,tlqpo,15
 4,xynpot,14
 5,k_ªlrlmk_,14
@@ -12,7 +12,7 @@
 10,mk_oj,9
 11,ªtnjjlr,9
 12,mk_k_,9
-13,pruqs,8
+13,pruq,8
 14,¹_¼j½p¾,8
 15,tvnpolo,8
 16,uqsxy,8

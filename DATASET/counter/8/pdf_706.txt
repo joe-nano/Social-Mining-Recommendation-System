@@ -1,3 +1,4 @@
 ,word,freq
-0,articles,1
-1,assemblage,1
+0,articl,1
+1,assemblag,1
+2,8fh8h,1

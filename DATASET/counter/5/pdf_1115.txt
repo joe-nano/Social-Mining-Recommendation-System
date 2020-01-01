@@ -10,8 +10,8 @@
 8,3ikl9nmomi1,2
 9,27bm67sh,2
 10,k1tyl9n7b,2
-11,143oa,2
-12,m6h63o9na,2
+11,143o,2
+12,m6h63o9n,2
 13,ho9n3i1,2
 14,kl3i5lc8_,2
 15,l7b5fc8hi7bkf_nm,2
@@ -19,7 +19,7 @@
 17,kf9em,2
 18,kfh6361,2
 19,bcfm6m67sun,2
-20,k143oc83oa,2
+20,k143oc83o,2
 21,m69e3,2
 22,fkf_nm,2
 23,c8_nc8,2

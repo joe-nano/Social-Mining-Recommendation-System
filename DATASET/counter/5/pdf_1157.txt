@@ -11,11 +11,11 @@
 9,d7d7de,12
 10,gc7614g,11
 11,mnc7d7dy,11
-12,chemins,11
+12,chemin,11
 13,e6fc7d,9
 14,fde6f4g,9
 15,d7056,9
-16,bonbons,9
+16,bonbon,9
 17,4tc7l,8
 18,e236105m,8
 19,kdn23,8

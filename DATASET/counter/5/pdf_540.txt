@@ -1,6 +1,6 @@
 ,word,freq
-0,consignes,1
-1,articles,1
+0,consign,1
+1,articl,1
 2,4occ56,1
 3,oc4o6,1
 4,4occx6,1

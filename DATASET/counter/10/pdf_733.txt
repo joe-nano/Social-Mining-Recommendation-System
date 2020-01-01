@@ -1,2 +1,3 @@
 ,word,freq
 0,actes_non_num,1
+1,351rot,1

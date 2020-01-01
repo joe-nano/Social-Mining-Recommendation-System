@@ -1,4 +1,6 @@
 ,word,freq
-0,cartographie,1
-1,351mantique,1
-2,connaissances,1
+0,cartograph,1
+1,351mantiqu,1
+2,connaiss,1
+3,cart,1
+4,post,1

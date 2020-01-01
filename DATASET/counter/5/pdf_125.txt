@@ -1,2 +1,2 @@
 ,word,freq
-0,actes,1
+0,acte,1

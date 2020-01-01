@@ -1,2 +1,4 @@
 ,word,freq
-0,assemblage,1
+0,articl,1
+1,assemblag,1
+2,l31gm,1

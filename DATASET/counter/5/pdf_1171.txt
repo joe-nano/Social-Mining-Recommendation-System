@@ -13,7 +13,7 @@
 11,s9dfal,6
 12,nb2b2,6
 13,prdf8,5
-14,b1stb1stiha9a,5
+14,b1stb1stiha9,5
 15,dl6ldf,5
 16,itstb,4
 17,8ldfd3,4
@@ -23,7 +23,7 @@
 21,cedf8,3
 22,gid3clg,3
 23,9nb28,3
-24,stifala,3
+24,stifal,3
 25,fkfk9,3
 26,alifcl,3
 27,khifal,3

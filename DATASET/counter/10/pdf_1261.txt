@@ -1,2 +1,3 @@
 ,word,freq
-0,mephu_egc04_french_6pages,1
+0,mephu_egc04_french_6pag,1
+1,56789,1

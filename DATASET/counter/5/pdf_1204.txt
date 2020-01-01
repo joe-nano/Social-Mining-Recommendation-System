@@ -7,8 +7,8 @@
 5,kmwxy,17
 6,toezlno,17
 7,wxtvegl,17
-8,eglzw,15
-9,eglno,14
+8,eglno,15
+9,eglzw,15
 10,w5metvy,14
 11,lqezhnf,14
 12,hewxtv,13

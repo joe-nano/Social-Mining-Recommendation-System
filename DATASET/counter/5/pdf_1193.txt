@@ -7,10 +7,10 @@
 5,z0z0mgqy,16
 6,z0z0m,15
 7,6cngq,15
-8,v0mpk8401,14
-9,abmfng,13
-10,z0mgqy,13
-11,6cz9qyn,12
+8,6cz9qyn,14
+9,v0mpk8401,14
+10,abmfng,13
+11,z0mgqy,13
 12,axm9nr,12
 13,qrm91,11
 14,abm940,10

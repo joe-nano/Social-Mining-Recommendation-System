@@ -1,3 +1,2 @@
 ,word,freq
-0,microsoft,1
-1,egc2004_nt_mb,1
+0,egc2004_nt_mb,1
