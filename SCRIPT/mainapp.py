@@ -40,6 +40,15 @@ from networkx.algorithms.community import k_clique_communities
 from networkx.algorithms.centrality import edge_betweenness_centrality
 from networkx.algorithms.community.centrality import girvan_newman
 
+
+#%%
+import matplotlib.pyplot as plt
+np.random.seed(1000)
+plt.rcParams.update({'font.size': 8})
+plt.rc('text', usetex=True)
+plt.rc('font', family='serif')
+plt.rcParams['figure.dpi'] = 200
+
 #from PyDictionary import PyDictionary
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -262,10 +271,10 @@ def k_optimal():
         model = KMeans(n_clusters = k)
         model.fit(simscore)
         sse.append(model.inertia_)
-    plt.figure(figsize=(16,8))
+    plt.figure(figsize=(12,4))
     plt.plot(np.arange(2,40), sse, 'bx-')
     plt.xlabel('k')
-    plt.ylabel('Distortion')
+    plt.ylabel('sum of squared error')
     plt.title('The Elbow Method showing the optimal k')
     plt.show()
 
@@ -307,9 +316,23 @@ def tsne(score, c_size):
 #tsne(simscore, np.arange(32, 38, 1))
 
 
-#%% Graph Mining Application
+#%% ClusterRec
 
+def get_clusters():
+    kernel = ['linear', 'cosine', 'sigmoid', 'polynomial']
+    for ii in np.arange(32, 37, 1):
+        for ij in kernel:
+            pca = kPCA(k = ii, kernel = ij).fit(np.array(simscore))
+            pca = pca.components_.T
+            km = kkMeans(k = ii, kernel = ij, gamma = 1).fit_predict(pca)
+            cluster_labels = km.clusters
+            if not os.path.exists(os.path.join(path, 'labels')):
+                os.makedirs(os.path.join(path, 'labels'))
+                pd.DataFrame(cluster_labels).to_csv(os.path.join(path, f'labels/labels_{ii}_{ij}.csv'))
+            else:
+                pd.DataFrame(cluster_labels).to_csv(os.path.join(path, f'labels/labels_{ii}_{ij}.csv'))
 
+#get_clusters()
 
 #%% Application
 
@@ -317,7 +340,7 @@ app.layout = html.Div([
     html.Div([
         #--header section
         html.Div([
-                html.H3('GRAPH MINING FOR BIG DATA\nRecommender system for social mining'),
+                html.H3('RecSystem with Graph Mining and Unsupervised ML'),
                 ], style={'text-align': 'left','width': '49%', 'display': 'inline-block','vertical-align': 'middle'}),
         html.Div([
                 html.H4('Orhan M., Ekpo E., Jayani G.V, Ezukwoke K.I'),
@@ -352,28 +375,28 @@ app.layout = html.Div([
                             ), 
                     ], style = {'display': 'inline-block', 'width': '14%'}),
             html.Div([
-                    #---Cluster size
+                    #---kernels
                     html.Label('Kernel'),                    
                     dcc.RadioItems(
                             #---
                             id='kernel',
-                            options = [{'label': i, 'value': i} for i in ['linear', 'laplace', 'cosine', 'rbf']],
+                            options = [{'label': i, 'value': i} for i in ['linear', 'cosine', 'sigmoid', 'polynomial']],
                             value = "linear",
                             labelStyle={'display': 'inline-block'}
                             ), 
                     ], style = {'display': 'inline-block', 'width': '14%'}),
             html.Div([
                     #---Number of Topics
-                    html.Label('Number of Topics:'),                    
+                    html.Label('Number of Recommendations:'),                    
                     dcc.RadioItems(
                             #---
                             id='topic-number',
-                            options = [{'label': i, 'value': i} for i in [str(x) for x in np.arange(5, 11, 1)]],
-                            value = "5",
+                            options = [{'label': i, 'value': i} for i in [str(x) for x in np.arange(1, 4, 1)]],
+                            value = "2",
                             labelStyle={'display': 'inline-block'}
                             ), 
                     ], style = {'display': 'inline-block', 'width': '14%'}),
-            html.Div([#---Cluster size
+            html.Div([#---y-scale
                     html.Label('y-scale:'),                    
                     dcc.RadioItems(
                             #---
@@ -383,7 +406,7 @@ app.layout = html.Div([
                             labelStyle={'display': 'inline-block'}
                             ), 
                     ], style = {'display': 'inline-block', 'width': '14%'}),
-            #--- Token length
+            #---Recommendation length
             html.Div([
                     html.Label('Token length:'),                    
                     dcc.RadioItems(
@@ -458,11 +481,11 @@ app.layout = html.Div([
                 html.Label(id = 'label'),
                 ], style= {'width': '74%', 'display': 'inline-block','vertical-align': 'middle', 'font-size': '15px'}),
         html.Div([
-                html.H2('Topics'),
+                html.H2('Top Recommendation'),
 #                html.Label(id = 'topic-tags'),
                 html.Label(id = 'topic-tags', style={'text-align': 'center', 'margin': 'auto', 'vertical-align': 'middle'})
                 ], style={'text-align': 'center','width': '25%', 'display': 'inline-block','vertical-align': 'middle'}),
-                ], style={'background-color': 'rgb(204, 230, 244)', 'margin': 'auto', 'width': '100%', 'max-width': '1200px', 'box-sizing': 'border-box', 'height': '30vh'}),
+                ], style={'background-color': 'rgb(204, 230, 244)', 'margin': 'auto', 'width': '100%', 'max-width': '1500px', 'box-sizing': 'border-box', 'height': '30vh'}),
     #---
     #main div ends here
     ],style = {'background-color': 'rgb(204, 230, 244)','margin': 'auto', 'width': '100%', 'display': 'block'})
@@ -519,7 +542,6 @@ def update_figure(make_selection, g_m, knl, drop, yaxis, clust):
         else:
             pca = kPCA(k = int(clust), kernel = knl).fit(np.array(simscore))
             pca = pca.components_.T
-            km = KMeans(n_clusters = int(clust))
             km = kkMeans(k = int(clust), kernel = knl, gamma = 1).fit_predict(pca)
             cluster_labels = km.clusters
             ts = pd.read_csv(os.path.join(path, f'tsne/tsne_{int(clust)}.csv')).iloc[:, 1:]
@@ -669,14 +691,16 @@ def update_abstract(hoverData):
             abstract = data[data.pdf_names == f'{ii}.txt']['abstract'].values[0]
     return f'Abstract: {abstract}'
 
-
+#-Recommendation
 @app.callback(
         Output('topic-tags', 'children'),
         [Input('scatter_plot', 'hoverData'),
+         Input('kernel', 'value'),
+         Input('cluster', 'value'),
          Input('tokens', 'value'),
          Input('topic-number', 'value')]
         )
-def topic_tags(hoverData, token, topic):
+def recommendation(hoverData, knl, clust, token, numb):
     #--
 #    import random
     book_number = hoverData['points'][0]['customdata'][0]
@@ -685,9 +709,19 @@ def topic_tags(hoverData, token, topic):
     for ii in dirlis:
         if ii == book_number:
             #-open csv file and extract content
-            trac_x = random.sample(list(pd.read_csv(os.path.join(path, f'counter/{token}/{ii}.txt'))['word']), int(topic))
-            result = ', '.join(trac_x)
-    return result
+            labels = pd.read_csv(os.path.join(path, f'labels/labels_{clust}_{knl}.csv')).iloc[:, 1:]
+            data = pd.read_csv(os.path.join(path, 'processed/pcomplete.csv'), sep = ',',).iloc[:, 1:]
+            data['labels'] = labels
+            #take the label of the paper
+            lb = data[data.pdf_names == ii+'.txt']['labels'].values[0]
+            related_papers = data[data.labels == lb][:int(numb)]['title'].values
+    if int(numb) == 1:
+        return related_papers
+    elif int(numb) == 2:
+        return f'#1 {related_papers[0]}' + f'\n' + f'#2 {related_papers[1]}'
+    elif int(numb) == 3:
+        return f'#1 {related_papers[0]}'+ f'\n' + f'#2 {related_papers[1]}'+ f'\n' + f'#3 {related_papers[2]}'
+    return related_papers
 
 
 @app.callback(
