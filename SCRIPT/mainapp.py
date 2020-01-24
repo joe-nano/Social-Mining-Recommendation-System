@@ -19,6 +19,8 @@ import json
 import numpy as np
 import statistics as stats
 import collections
+from kernelkmeans import kkMeans
+from KPCA import kPCA
 from nltk.stem.snowball import FrenchStemmer, PorterStemmer
 from dash.dependencies import Input, Output
 import dash_core_components as dcc
@@ -226,7 +228,7 @@ def translate(path):
 from sklearn.feature_extraction.text import TfidfVectorizer 
 from sklearn.metrics.pairwise import cosine_similarity 
 from sklearn.cluster import KMeans 
-from sklearn.decomposition import PCA
+#from sklearn.decomposition import PCA
 
 def similarity_score(df):
     '''
@@ -327,7 +329,7 @@ app.layout = html.Div([
     #--scaling section
     html.Div([
             html.Div([
-                    #---Cluster size
+                    #---Graph mode returns either network or Clustering result
                     html.Label('Graph mode'),                    
                     dcc.RadioItems(
                             #---
@@ -336,7 +338,7 @@ app.layout = html.Div([
                             value = "Cluster",
                             labelStyle={'display': 'inline-block'}
                             ), 
-                    ], style = {'display': 'inline-block', 'width': '16%'}),
+                    ], style = {'display': 'inline-block', 'width': '14%'}),
                     
             html.Div([
                     #---Cluster size
@@ -348,7 +350,18 @@ app.layout = html.Div([
                             value = "33",
                             labelStyle={'display': 'inline-block'}
                             ), 
-                    ], style = {'display': 'inline-block', 'width': '16%'}),
+                    ], style = {'display': 'inline-block', 'width': '14%'}),
+            html.Div([
+                    #---Cluster size
+                    html.Label('Kernel'),                    
+                    dcc.RadioItems(
+                            #---
+                            id='kernel',
+                            options = [{'label': i, 'value': i} for i in ['linear', 'laplace', 'cosine', 'rbf']],
+                            value = "linear",
+                            labelStyle={'display': 'inline-block'}
+                            ), 
+                    ], style = {'display': 'inline-block', 'width': '14%'}),
             html.Div([
                     #---Number of Topics
                     html.Label('Number of Topics:'),                    
@@ -359,7 +372,7 @@ app.layout = html.Div([
                             value = "5",
                             labelStyle={'display': 'inline-block'}
                             ), 
-                    ], style = {'display': 'inline-block', 'width': '16%'}),
+                    ], style = {'display': 'inline-block', 'width': '14%'}),
             html.Div([#---Cluster size
                     html.Label('y-scale:'),                    
                     dcc.RadioItems(
@@ -369,7 +382,7 @@ app.layout = html.Div([
                             value = "Linear",
                             labelStyle={'display': 'inline-block'}
                             ), 
-                    ], style = {'display': 'inline-block', 'width': '16%'}),
+                    ], style = {'display': 'inline-block', 'width': '14%'}),
             #--- Token length
             html.Div([
                     html.Label('Token length:'),                    
@@ -380,7 +393,7 @@ app.layout = html.Div([
                             value = "5",
                             labelStyle={'display': 'inline-block'}
                             ), 
-                    ], style = {'display': 'inline-block', 'width': '16%'}),
+                    ], style = {'display': 'inline-block', 'width': '14%'}),
             #--- Sort Tags
             html.Div([
                     html.Label('Sort Tags'),                    
@@ -391,7 +404,7 @@ app.layout = html.Div([
                             value = "Most Tags",
                             labelStyle={'display': 'inline-block'}
                             ), 
-                    ], style = {'display': 'inline-block', 'width': '16%'})
+                    ], style = {'display': 'inline-block', 'width': '14%'})
             ], style={'background-color': 'rgb(204, 230, 244)', 'padding': '1rem 0px', 'margin-top': '2px','box-shadow': 'black 0px 0px 1px 0px','vertical-align': 'middle'}),
     #-- Graphs
     html.Div([
@@ -459,11 +472,12 @@ app.layout = html.Div([
         Output('scatter_plot', 'figure'),
         [Input('year-slider', 'value'),
          Input('g_mode', 'value'),
+         Input('kernel', 'value'),
          Input('dd', 'value'),
          Input('y-items', 'value'),
          Input('cluster', 'value'),
          ])
-def update_figure(make_selection, g_m, drop, yaxis, clust):
+def update_figure(make_selection, g_m, knl, drop, yaxis, clust):
 #    data_places = data[(data.year_edited >= make_selection[0]) & (data.year_edited <= make_selection[1])]
     ts = pd.read_csv(os.path.join(path, f'tsne/tsne_{int(clust)}.csv')).iloc[:, 1:]
     ts = ts.sort_values(by=['year'])
@@ -490,14 +504,12 @@ def update_figure(make_selection, g_m, drop, yaxis, clust):
                         mode = 'markers',
                         opacity = 0.6,
                         marker = {'size': 15, 
-    #                              'color': 'rgba(50, 171, 96, 0.6)',
                                   'line': {'width': 0.5, 'color': 'white'}},
                         name = val,
                         ))
             
             return {'data': traces,
                     'layout': go.Layout(
-    #                        height = 600,
                             xaxis={'title': 'tsne-2'},
                             yaxis={'type': 'linear' if yaxis == 'Linear' else 'log','title': 'tsne-1'},
                             margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
@@ -505,10 +517,11 @@ def update_figure(make_selection, g_m, drop, yaxis, clust):
                             hovermode='closest')
                             }
         else:
-    #        pca = PCA(n_components = int(clust)).fit(simscore)
+            pca = kPCA(k = int(clust), kernel = knl).fit(np.array(simscore))
+            pca = pca.components_.T
             km = KMeans(n_clusters = int(clust))
-            km.fit_transform(simscore)
-            cluster_labels = km.labels_
+            km = kkMeans(k = int(clust), kernel = knl, gamma = 1).fit_predict(pca)
+            cluster_labels = km.clusters
             ts = pd.read_csv(os.path.join(path, f'tsne/tsne_{int(clust)}.csv')).iloc[:, 1:]
             ts = ts[(ts.year >= make_selection[0]) & (ts.year <= make_selection[1])] 
             traces = go.Scattergl(
