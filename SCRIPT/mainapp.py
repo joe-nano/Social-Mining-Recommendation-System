@@ -5,14 +5,22 @@ Created on Mon Dec  9 14:10:14 2019
 
 @author: kenneth
 """
+#--dependencies for unsupervised modeling and GUI
 import pandas as pd
 import dash
 import os 
 import nltk
 import random
 import pickle
+import re
+import math
+import random 
+import json
 import numpy as np
-from collections import Counter
+import statistics as stats
+import collections
+from kernelkmeans import kkMeans
+from KPCA import kPCA
 from nltk.stem.snowball import FrenchStemmer, PorterStemmer
 from dash.dependencies import Input, Output
 import dash_core_components as dcc
@@ -22,6 +30,16 @@ from os.path import join
 from flask import Flask
 from collections import Counter
 from nltk.tokenize import RegexpTokenizer
+from sklearn.manifold import TSNE
+#--dependencies for graph mining
+import networkx as nx 
+from networkx.algorithms.distance_measures import diameter
+from networkx.algorithms.community import community_utils
+from networkx.algorithms.community import greedy_modularity_communities
+from networkx.algorithms.community import k_clique_communities
+from networkx.algorithms.centrality import edge_betweenness_centrality
+from networkx.algorithms.community.centrality import girvan_newman
+
 #from PyDictionary import PyDictionary
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -164,7 +182,6 @@ def tokStemmer(booknames):
             else:
                 with open(os.path.join(path, f'pbooks/{ii}'), 'w') as wr:
                     wr.writelines(final)
-    print(len(sentence))
     complete = booknames.copy(deep = True)
     complete['sentence'] = sentence
     #--save files to directory
@@ -211,7 +228,7 @@ def translate(path):
 from sklearn.feature_extraction.text import TfidfVectorizer 
 from sklearn.metrics.pairwise import cosine_similarity 
 from sklearn.cluster import KMeans 
-from sklearn.decomposition import PCA
+#from sklearn.decomposition import PCA
 
 def similarity_score(df):
     '''
@@ -228,10 +245,71 @@ def similarity_score(df):
 
 #_, simscore = similarity_score(complete['sentence'])
 #pd.DataFrame(simscore).to_csv(os.path.join(path, 'processed/similarityscore.csv'))
+    
+
+    
 #%%
 data = pd.read_csv(os.path.join(path, 'processed/pcomplete.csv'), sep = ',',).iloc[:, 1:]
 sort_dataset = data.sort_values(by=['year'])
 simscore = pd.read_csv(os.path.join(path, 'processed/similarityscore.csv')).iloc[:, 1:]
+
+
+#%%Optimum number of clusters
+def k_optimal():
+    import matplotlib.pyplot as plt
+    sse = []
+    for k in np.arange(2,40):
+        model = KMeans(n_clusters = k)
+        model.fit(simscore)
+        sse.append(model.inertia_)
+    plt.figure(figsize=(16,8))
+    plt.plot(np.arange(2,40), sse, 'bx-')
+    plt.xlabel('k')
+    plt.ylabel('Distortion')
+    plt.title('The Elbow Method showing the optimal k')
+    plt.show()
+
+#k_optimal()
+
+#%%TSNE
+
+def tsne(score, c_size):
+    '''
+    param:
+        score: similarity score
+        c_size: TSNE components
+        
+    return TSNE RESULT
+    '''
+    import pandas as pd
+    for cs in c_size:
+        ts = TSNE(random_state = cs, perplexity = 50).fit_transform(score)
+        if not os.path.exists(os.path.join(path, 'tsne')):
+            os.makedirs(os.path.join(path, 'tsne'))
+            print(f'*******Saving TSNE_{cs}*******')
+            ts = pd.DataFrame(ts)
+            ts['pdf_names'] = np.array(data['pdf_names'])
+            ts['year'] = np.array(data['year'])
+            ts['language'] = np.array(data['language'])
+            ts['authors'] = np.array(data['authors'])
+            ts['title'] = np.array(data['title'])
+            ts.to_csv(os.path.join(path, f'tsne/tsne_{cs}.csv'))
+        else:
+            print(f'*******Saving TSNE_{cs}*******')
+            ts = pd.DataFrame(ts)
+            ts['pdf_names'] = np.array(data['pdf_names'])
+            ts['year'] = np.array(data['year'])
+            ts['language'] = np.array(data['language'])
+            ts['authors'] = np.array(data['authors'])
+            ts['title'] = np.array(data['title'])
+            ts.to_csv(os.path.join(path, f'tsne/tsne_{cs}.csv'))
+                
+#tsne(simscore, np.arange(32, 38, 1))
+
+
+#%% Graph Mining Application
+
+
 
 #%% Application
 
@@ -251,16 +329,39 @@ app.layout = html.Div([
     #--scaling section
     html.Div([
             html.Div([
+                    #---Graph mode returns either network or Clustering result
+                    html.Label('Graph mode'),                    
+                    dcc.RadioItems(
+                            #---
+                            id='g_mode',
+                            options = [{'label': i, 'value': i} for i in ['Network', 'Cluster']],
+                            value = "Cluster",
+                            labelStyle={'display': 'inline-block'}
+                            ), 
+                    ], style = {'display': 'inline-block', 'width': '14%'}),
+                    
+            html.Div([
                     #---Cluster size
                     html.Label('Cluster size: Default is optimum'),                    
                     dcc.RadioItems(
                             #---
                             id='cluster',
-                            options = [{'label': i, 'value': i} for i in [str(x) for x in np.arange(2, 7, 1)]],
-                            value = "3",
+                            options = [{'label': i, 'value': i} for i in [str(x) for x in np.arange(32, 38, 1)]],
+                            value = "33",
                             labelStyle={'display': 'inline-block'}
                             ), 
-                    ], style = {'display': 'inline-block', 'width': '20%'}),
+                    ], style = {'display': 'inline-block', 'width': '14%'}),
+            html.Div([
+                    #---Cluster size
+                    html.Label('Kernel'),                    
+                    dcc.RadioItems(
+                            #---
+                            id='kernel',
+                            options = [{'label': i, 'value': i} for i in ['linear', 'laplace', 'cosine', 'rbf']],
+                            value = "linear",
+                            labelStyle={'display': 'inline-block'}
+                            ), 
+                    ], style = {'display': 'inline-block', 'width': '14%'}),
             html.Div([
                     #---Number of Topics
                     html.Label('Number of Topics:'),                    
@@ -271,7 +372,7 @@ app.layout = html.Div([
                             value = "5",
                             labelStyle={'display': 'inline-block'}
                             ), 
-                    ], style = {'display': 'inline-block', 'width': '20%'}),
+                    ], style = {'display': 'inline-block', 'width': '14%'}),
             html.Div([#---Cluster size
                     html.Label('y-scale:'),                    
                     dcc.RadioItems(
@@ -281,7 +382,7 @@ app.layout = html.Div([
                             value = "Linear",
                             labelStyle={'display': 'inline-block'}
                             ), 
-                    ], style = {'display': 'inline-block', 'width': '20%'}),
+                    ], style = {'display': 'inline-block', 'width': '14%'}),
             #--- Token length
             html.Div([
                     html.Label('Token length:'),                    
@@ -292,7 +393,7 @@ app.layout = html.Div([
                             value = "5",
                             labelStyle={'display': 'inline-block'}
                             ), 
-                    ], style = {'display': 'inline-block', 'width': '20%'}),
+                    ], style = {'display': 'inline-block', 'width': '14%'}),
             #--- Sort Tags
             html.Div([
                     html.Label('Sort Tags'),                    
@@ -303,7 +404,7 @@ app.layout = html.Div([
                             value = "Most Tags",
                             labelStyle={'display': 'inline-block'}
                             ), 
-                    ], style = {'display': 'inline-block', 'width': '20%'})
+                    ], style = {'display': 'inline-block', 'width': '14%'})
             ], style={'background-color': 'rgb(204, 230, 244)', 'padding': '1rem 0px', 'margin-top': '2px','box-shadow': 'black 0px 0px 1px 0px','vertical-align': 'middle'}),
     #-- Graphs
     html.Div([
@@ -370,88 +471,142 @@ app.layout = html.Div([
 @app.callback(
         Output('scatter_plot', 'figure'),
         [Input('year-slider', 'value'),
+         Input('g_mode', 'value'),
+         Input('kernel', 'value'),
          Input('dd', 'value'),
          Input('y-items', 'value'),
          Input('cluster', 'value'),
          ])
-def update_figure(make_selection, drop, yaxis, clust):
+def update_figure(make_selection, g_m, knl, drop, yaxis, clust):
 #    data_places = data[(data.year_edited >= make_selection[0]) & (data.year_edited <= make_selection[1])]
-    data_places = sort_dataset[(sort_dataset.year >= make_selection[0]) & (sort_dataset.year <= make_selection[1])] 
-    if drop != []:
-        traces = []
-        for val in drop:
-            traces.append(go.Scattergl(
-                    x = data_places.loc[data_places['year'] == int(val), 'year'],
-                    y = simscore.iloc[:, 0].values,
+    ts = pd.read_csv(os.path.join(path, f'tsne/tsne_{int(clust)}.csv')).iloc[:, 1:]
+    ts = ts.sort_values(by=['year'])
+    data_places = ts[(ts.year >= make_selection[0]) & (ts.year <= make_selection[1])] 
+    if g_m == 'Cluster':
+        if drop != []:
+            traces = []
+            for val in drop:
+                traces.append(go.Scattergl(
+                        x = np.array(data_places.loc[data_places.year == int(val), '0']),
+                        y = np.array(data_places.loc[data_places.year == int(val), '1']),
+                        text = [(x, y, z, w, p) for (x, y, z, w, p) in zip(\
+                                 data_places.loc[data_places['year'] == int(val), 'pdf_names'].apply(lambda x: x.split('.')[0]),\
+                                 data_places.loc[data_places['year'] == int(val), 'year'],\
+                                 data_places.loc[data_places['year'] == int(val), 'language'],\
+                                 data_places.loc[data_places['year'] == int(val), 'authors'],\
+                                data_places.loc[data_places['year'] == int(val), 'title'])],
+                        customdata = [(x, y, z, w, p) for (x, y, z, w, p) in zip(\
+                                 data_places.loc[data_places['year'] == int(val), 'pdf_names'].apply(lambda x: x.split('.')[0]),\
+                                 data_places.loc[data_places['year'] == int(val), 'year'],\
+                                 data_places.loc[data_places['year'] == int(val), 'language'],\
+                                 data_places.loc[data_places['year'] == int(val), 'authors'],\
+                                data_places.loc[data_places['year'] == int(val), 'title'])],
+                        mode = 'markers',
+                        opacity = 0.6,
+                        marker = {'size': 15, 
+                                  'line': {'width': 0.5, 'color': 'white'}},
+                        name = val,
+                        ))
+            
+            return {'data': traces,
+                    'layout': go.Layout(
+                            xaxis={'title': 'tsne-2'},
+                            yaxis={'type': 'linear' if yaxis == 'Linear' else 'log','title': 'tsne-1'},
+                            margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
+                            legend={'x': 1, 'y': 1},
+                            hovermode='closest')
+                            }
+        else:
+            pca = kPCA(k = int(clust), kernel = knl).fit(np.array(simscore))
+            pca = pca.components_.T
+            km = KMeans(n_clusters = int(clust))
+            km = kkMeans(k = int(clust), kernel = knl, gamma = 1).fit_predict(pca)
+            cluster_labels = km.clusters
+            ts = pd.read_csv(os.path.join(path, f'tsne/tsne_{int(clust)}.csv')).iloc[:, 1:]
+            ts = ts[(ts.year >= make_selection[0]) & (ts.year <= make_selection[1])] 
+            traces = go.Scattergl(
+                    x = np.array(ts)[:, 0],
+                    y = np.array(ts)[:, 1],
                     text = [(x, y, z, w, p) for (x, y, z, w, p) in zip(\
-                             data_places.loc[data_places['year'] == int(val), 'pdf_names'].apply(lambda x: x.split('.')[0]),\
-                             data_places.loc[data_places['year'] == int(val), 'year'],\
-                             data_places.loc[data_places['year'] == int(val), 'language'],\
-                             data_places.loc[data_places['year'] == int(val), 'authors'],\
-                            data_places.loc[data_places['year'] == int(val), 'title'])],
+                                 ts['pdf_names'].apply(lambda x: x.split('.')[0]),\
+                                 ts['year'],\
+                                 ts['language'],\
+                                 ts['authors'],\
+                                 ts['title'])],
                     customdata = [(x, y, z, w, p) for (x, y, z, w, p) in zip(\
-                             data_places.loc[data_places['year'] == int(val), 'pdf_names'].apply(lambda x: x.split('.')[0]),\
-                             data_places.loc[data_places['year'] == int(val), 'year'],\
-                             data_places.loc[data_places['year'] == int(val), 'language'],\
-                             data_places.loc[data_places['year'] == int(val), 'authors'],\
-                            data_places.loc[data_places['year'] == int(val), 'title'])],
+                                  ts['pdf_names'].apply(lambda x: x.split('.')[0]),\
+                                  ts['year'],\
+                                 ts['language'],\
+                                 ts['authors'],\
+                                ts['title'])],
                     mode = 'markers',
-                    opacity = 0.6,
+                    opacity = 0.7,
                     marker = {'size': 15, 
-#                              'color': 'rgba(50, 171, 96, 0.6)',
-                              'line': {'width': 0.5, 'color': 'white'}},
-                    name = val,
-                    ))
-        
-        return {'data': traces,
-                'layout': go.Layout(
-#                        height = 600,
-                        xaxis={'title': 'year'},
-                        yaxis={'type': 'linear' if yaxis == 'Linear' else 'log','title': 'Similarity score'},
-                        margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
-                        legend={'x': 1, 'y': 1},
-                        hovermode='closest')
-                        }
+    #                          'opacity': 0.9,
+                              'color': cluster_labels,
+                              'colorscale':'Viridis',
+                              'line': {'width': .5, 'color': 'white'}},
+                    )
+            
+            return {'data': [traces],
+                    'layout': go.Layout(
+                            height = 600,
+                            xaxis={'title': 'tsne-2'},
+                            yaxis={'type': 'linear' if yaxis == 'Linear' else 'log','title': 'tsne-1'},
+                            margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
+                            legend={'x': 1, 'y': 1},
+                            hovermode='closest')
+                            }
     else:
-        pca = PCA(n_components = int(clust)).fit(simscore)
-        km = KMeans(n_clusters = int(clust), init = pca.components_, n_init = 1)
-        km.fit_transform(simscore)
-        cluster_labels = km.labels_
-        traces = go.Scattergl(
-                x = data_places['year'],
-                y = simscore.iloc[:, 0].values,
-                text = [(x, y, z, w, p) for (x, y, z, w, p) in zip(\
-                             data_places['pdf_names'].apply(lambda x: x.split('.')[0]),\
-                             data_places['year'],\
-                             data_places['language'],\
-                             data_places['authors'],\
-                             data_places['title'])],
-                customdata = [(x, y, z, w, p) for (x, y, z, w, p) in zip(\
-                              data_places['pdf_names'].apply(lambda x: x.split('.')[0]),\
-                              data_places['year'],\
-                             data_places['language'],\
-                             data_places['authors'],\
-                            data_places['title'])],
-                mode = 'markers',
-                opacity = 0.7,
-                marker = {'size': 15, 
-#                          'opacity': 0.9,
-                          'color': cluster_labels,
-                          'colorscale':'Viridis',
-                          'line': {'width': .5, 'color': 'white'}},
-                )
+        ss = np.array(simscore)
+        m, n = ss.shape
+        G = nx.Graph()
+        for n in range(m):
+            G.add_node(n)
+        for i in range(m):
+            for j in range(n):
+                if ss[i,j] != 0 and i != j:
+                    G.add_edge(i,j)
+        E = [edg for edg in G.edges]
+        pos = nx.fruchterman_reingold_layout(G)
+        Xv = [pos[k][0] for k in range(n)]
+        Yv = [pos[k][1] for k in range(n)]
+        Xed = []
+        Yed = []
+        for edge in E:
+            Xed += [pos[edge[0]][0], pos[edge[1]][0], None]
+            Yed += [pos[edge[0]][1], pos[edge[1]][1], None]
+            
+        etrace = go.Scattergl(x = Xed,
+                       y = Yed,
+                       mode = 'lines',
+                       line = dict(color='rgb(210,210,210)', width = .5),
+                       hoverinfo = 'none'
+                       )
         
-        return {'data': [traces],
-                'layout': go.Layout(
-                        height = 600,
-                        xaxis={'title': 'year'},
-                        yaxis={'type': 'linear' if yaxis == 'Linear' else 'log','title': 'Similarity score'},
-                        margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
-                        legend={'x': 1, 'y': 1},
-                        hovermode='closest')
-                        }
+        vtrace = go.Scattergl(x = Xv,
+                       y = Yv,
+                       mode = 'markers',
+                       name = 'net',
+                       marker = dict(symbol='circle-dot',
+                                     size = 5,
+                                     color='#6959CD',
+                                     line=dict(color='rgb(50,50,50)', width=0.5)
+                                     ),
+#                       text = labels,
+                       hoverinfo='text'
+                       )
 
- 
+        return {'data': [etrace, vtrace],
+                    'layout': go.Layout(
+                            height = 600,
+                            xaxis={'title': 'year'},
+                            yaxis={'type': 'linear' if yaxis == 'Linear' else 'log','title': 'Similarity score'},
+                            margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
+                            legend={'x': 1, 'y': 1},
+                            hovermode='closest')
+                            }
+        
 @app.callback(
         Output('topic', 'children'),
         [Input('scatter_plot', 'hoverData')]
