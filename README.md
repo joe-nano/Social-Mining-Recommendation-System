@@ -68,5 +68,5 @@ Live demo of the application is available on heroku
 https://graphminerbigdata.herokuapp.com/
 ```
 
-
+![Image 1](https://github.com/beteko/Social-Mining-Recommendation-System/blob/master/gm.gif)
 
