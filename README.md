@@ -34,7 +34,7 @@ We also use graph mining modelling in finding different communities which a book
   <li>Web GUI Viusalization</li>
     <ul>
     <li>TSNE 2D Visualizaion</li>
-    <li>Hover over data points to see <Title, year, and author of paper></li>
+    <li>Hover over data points to see </li>
     <li>Hover over data to see top recommendation based</li>
     <li>Bar chat for 15 most frequent words in research paper</li>
     </ul>
@@ -59,4 +59,14 @@ python mainapp.py
 ```python
 Navigate http://127.0.0.1:8050/ 
 ```
+
+### Live Demo
+
+Live demo of the application is available on heroku
+
+```python
+https://graphminerbigdata.herokuapp.com/
+```
+
+
 
