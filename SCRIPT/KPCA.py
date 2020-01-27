@@ -63,7 +63,7 @@ class Kernels:
         :return type: kernel(Gram) matrix
         '''
         if not gamma:
-            gamma = 1
+            gamma = 0.1
         else:
             gamma = gamma
         if x1.ndim == 1 and x2.ndim == 1:
@@ -84,7 +84,7 @@ class Kernels:
         :return type: kernel(Gram) matrix
         '''
         if not gamma:
-            gamma = 1
+            gamma = 0.1
         else:
             gamma = gamma
         if x1.ndim == 1 and x2.ndim == 1:
