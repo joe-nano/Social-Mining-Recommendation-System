@@ -1,5 +1,5 @@
 # Social-Mining-Recommendation-System
-Datamining for Big Data
+Datamining for Big Data hosted live on Heroku [![Hosted Live](https://img.shields.io/badge/Hosted-Live-brightgreen.svg?style=flat)](https://graphminerbigdata.herokuapp.com/)
  
 ### About Project
 Content based Recommedation system based on Graph mining and Unsupervised Machine learning method. The application is visualizes the similarity between the content of different publications and how this publications are similar in terms of content. 
